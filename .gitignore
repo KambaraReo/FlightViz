@@ -1,0 +1,16 @@
+# General
+*.log
+*.pid
+log/
+tmp/
+.env
+.env.*
+vendor/
+frontend/node_modules/
+frontend/dist/
+backend/vendor/
+
+# VSCode, macOS, etc.
+.vscode/
+.DS_Store
+.ruby-lsp
