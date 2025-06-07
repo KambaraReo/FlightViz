@@ -1,0 +1,38 @@
+/* :global(.className) は CSS Modules において、外部ライブラリのクラスに作用させるための書き方 */
+/* ポップアップ本体のラッパーを上書き */
+:global(.leaflet-popup-content-wrapper) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+/* ポップアップの中のコンテンツ枠も調整 */
+:global(.leaflet-popup-content) {
+  margin: 0 !important;
+}
+
+/* ポップアップの先端の三角（ティップ）も非表示に */
+:global(.leaflet-popup-tip-container) {
+  display: none !important;
+}
+
+/* 閉じるボタン（右上の✕）を非表示 */
+:global(.leaflet-container a.leaflet-popup-close-button) {
+  display: none !important;
+}
+
+.glow-popup {
+  background-color: #1b1e23;
+  opacity: .7;
+  color: #00ffcc;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  box-shadow:
+    0 0 5px #00ffcc,
+    0 0 10px #00ffcc,
+    0 0 15px #00ffcc;
+  text-shadow: 0 0 2px #00ffcc;
+}

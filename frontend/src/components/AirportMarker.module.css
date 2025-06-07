@@ -1,0 +1,10 @@
+.glow-marker {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ffcc;
+  box-shadow:
+    0 0 5px #00ffcc,
+    0 0 10px #00ffcc,
+    0 0 15px #00ffcc;
+}
