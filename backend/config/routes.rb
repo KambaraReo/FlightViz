@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   namespace :api do
     namespace :v1 do
-      get "tracks", to: "tracks#index"
+      get 'flights/:flight_id/tracks', to: 'tracks#by_flight'
     end
   end
 end
