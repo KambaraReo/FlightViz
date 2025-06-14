@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline } from 'react-leaflet';
 import AirportMarker from './AirportMarker';
 import { fetchAirports } from '../utils/api/airports';
 import type { Airport } from '../utils/api/airports';
+import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
 
 const AirportMap = () => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const status = 1;
+  const [flightId, setFlightId] = useState<string>('AP00119');
+  const [track, setTrack] = useState<TrackPoint[]>([]);
 
   useEffect(() => {
-    setLoading(true);
-
-    fetchAirports(status)
-      .then((data) => {
-        setAirports(data);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch airports", err);
-        setError("空港データの取得に失敗しました");
-      })
-      .finally(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [airportData, trackData] = await Promise.all([
+          fetchAirports(status),
+          fetchOneDayTrack(flightId)
+        ]);
+        setAirports(airportData);
+        setTrack(trackData);
+      } catch (err) {
+        console.error("データの取得に失敗しました", err);
+        setError("データの取得に失敗しました");
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchData();
+  }, [flightId]);
 
   return loading ? (
     <p>Loading...</p>
@@ -49,6 +57,16 @@ const AirportMap = () => {
           lon={airport.lon}
         />
       ))}
+      {track.length > 0 && (
+        <Polyline
+          positions={track.map((point) => [point.lat, point.lon])}
+          pathOptions={{
+            color: '#39FF14',
+            weight: 1,
+            opacity: 0.7,
+          }}
+        />
+      )}
     </MapContainer>
   ));
 };
