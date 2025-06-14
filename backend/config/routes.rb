@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'flights/:flight_id/tracks', to: 'tracks#by_flight'
+      resources :airports, only: [:index]
     end
   end
 end

@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_24_104708) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_08_083554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "airports", force: :cascade do |t|
+    t.string "country_code"
+    t.string "icao_code", null: false
+    t.string "label"
+    t.float "lat"
+    t.float "lon"
+    t.string "uri"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["icao_code"], name: "index_airports_on_icao_code", unique: true
+  end
 
   create_table "tracks", force: :cascade do |t|
     t.datetime "timestamp"
