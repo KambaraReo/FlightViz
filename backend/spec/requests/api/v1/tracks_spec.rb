@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Tracks", type: :request do
-  describe "GET /api/v1/flights/:flight_id/tracks" do
+  describe "GET /api/v1/flights/:flight_id/track" do
     let(:flight_id) { "TEST00001" }
     let!(:tracks) { create_list(:track, 3, flight_id: flight_id) }
 
     context "when flight_id exists" do
       it "returns 200 and the tracks for the flight" do
-        get "/api/v1/flights/#{flight_id}/tracks", headers: { "ACCEPT" => "application/json" }
+        get "/api/v1/flights/#{flight_id}/track", headers: { "ACCEPT" => "application/json" }
 
         expect(response).to have_http_status(:ok)
 
@@ -25,7 +25,7 @@ RSpec.describe "Api::V1::Tracks", type: :request do
 
     context "when flight_id does not exist" do
       it "returns 404 with error" do
-        get "/api/v1/flights/UNKNOWN99999/tracks", headers: { "ACCEPT" => "application/json" }
+        get "/api/v1/flights/UNKNOWN99999/track", headers: { "ACCEPT" => "application/json" }
 
         expect(response).to have_http_status(:not_found)
 
