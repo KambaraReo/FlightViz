@@ -1,7 +1,7 @@
 require "csv"
 
 class Api::V1::TracksController < ApplicationController
-  def by_flight
+  def show
     tracks =Track.where(flight_id: params[:flight_id]).order(:timestamp)
 
     if tracks.any?
