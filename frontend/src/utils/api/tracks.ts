@@ -27,5 +27,25 @@ const fetchOneDayTrack = async (flightId: string): Promise<TrackPoint[]> => {
   }
 };
 
+const fetchFlightIds = async (): Promise<string[]> => {
+  try {
+    const response = await fetch('/api/v1/flights', {
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch flight IDs');
+    }
+
+    const data: string[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching flight Ids:', error);
+    return [];
+  }
+};
+
 export type { TrackPoint }
-export { fetchOneDayTrack }
+export { fetchOneDayTrack, fetchFlightIds }

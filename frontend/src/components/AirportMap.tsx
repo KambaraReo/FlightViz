@@ -5,12 +5,15 @@ import { fetchAirports } from '../utils/api/airports';
 import type { Airport } from '../utils/api/airports';
 import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
 
-const AirportMap = () => {
+type AirportMapProps = {
+  flightId: string;
+};
+
+const AirportMap = ({ flightId }: AirportMapProps) => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const status = 1;
-  const [flightId, setFlightId] = useState<string>('AP00119');
   const [track, setTrack] = useState<TrackPoint[]>([]);
 
   useEffect(() => {
