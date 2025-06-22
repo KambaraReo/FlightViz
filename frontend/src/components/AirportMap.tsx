@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker} from 'react-leaflet';
 import AirportMarker from './AirportMarker';
+import AnimationSlider from './AnimationSlider';
 import { fetchAirports } from '../utils/api/airports';
 import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
 import L from "leaflet";
@@ -96,6 +97,12 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
           Pause
         </button>
       </div>
+
+      <AnimationSlider
+        animationIndex={animationIndex}
+        setAnimationIndex={setAnimationIndex}
+        max={track.length > 0 ? track.length - 1 : 0}
+      />
 
       <MapContainer
         center={[36.2048, 138.2529]}
