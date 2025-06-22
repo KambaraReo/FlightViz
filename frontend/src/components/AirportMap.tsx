@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker} from 'react-leaflet';
 import AirportMarker from './AirportMarker';
-import AnimationSlider from './AnimationSlider';
+import PlaybackControls from './PlaybackControls';
 import { fetchAirports } from '../utils/api/airports';
 import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
 import L from "leaflet";
@@ -33,6 +33,7 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   const [track, setTrack] = useState<TrackPoint[]>([]);
   const [animationIndex, setAnimationIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [speed, setSpeed] = useState(500);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,10 +70,10 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
           return prevIndex;
         }
       });
-    }, 500);
+    }, speed);
 
     return () => clearInterval(interval);
-  }, [isPlaying, track]);
+  }, [isPlaying, speed, track]);
 
   return loading ? (
     <p>Loading...</p>
@@ -80,27 +81,13 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
     <p>{error}</p>
   ): (
     <>
-      <div className="mb-2 space-x-2">
-        <button
-          onClick={() => {
-            setAnimationIndex(0);
-            setIsPlaying(true);
-          }}
-          className="bg-blue-500 text-white px-3 py-1 rounded"
-        >
-          Play
-        </button>
-        <button
-          onClick={() => setIsPlaying(false)}
-          className="bg-gray-500 text-white px-3 py-1 rounded"
-        >
-          Pause
-        </button>
-      </div>
-
-      <AnimationSlider
+      <PlaybackControls
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
         animationIndex={animationIndex}
         setAnimationIndex={setAnimationIndex}
+        speed={speed}
+        setSpeed={setSpeed}
         max={track.length > 0 ? track.length - 1 : 0}
       />
 
