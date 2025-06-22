@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker} from 'react-leaflet';
 import AirportMarker from './AirportMarker';
 import PlaybackControls from './PlaybackControls';
@@ -12,19 +12,6 @@ type AirportMapProps = {
   flightId: string;
 };
 
-const radarIcon = L.divIcon({
-  html: `<div style="
-    width: 10px;
-    height: 10px;
-    border: 2px solid yellow;
-    background-color: transparent;
-    box-sizing: border-box;
-    border-radius: 0;
-  "></div>`,
-  className: '',
-  iconSize: [10, 10],
-});
-
 const AirportMap = ({ flightId }: AirportMapProps) => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,6 +22,22 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [speed, setSpeed] = useState(500);
   const [showFullTrack, setShowFullTrack] = useState(false);
+  const radarIcon = useMemo(() => {
+    const blinkingClass = isPlaying ? 'leaflet-blinking-icon' : '';
+
+    return L.divIcon({
+      html: `<div class="${blinkingClass}" style="
+        width: 10px;
+        height: 10px;
+        border: 2px solid yellow;
+        background-color: transparent;
+        box-sizing: border-box;
+        border-radius: 0;
+      "></div>`,
+      className: '',
+      iconSize: [10, 10],
+    });
+  }, [isPlaying]);
 
   useEffect(() => {
     const fetchData = async () => {

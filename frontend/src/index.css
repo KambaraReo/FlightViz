@@ -74,3 +74,13 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* マーカー点滅アニメーション */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.leaflet-blinking-icon {
+  animation: blink 4s infinite;
+}
