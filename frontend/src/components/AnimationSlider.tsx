@@ -4,12 +4,14 @@ type AnimationSliderProps = {
   animationIndex: number;
   setAnimationIndex: (index: number) => void;
   max: number;
+  disabled: boolean;
 };
 
 const AnimationSlider: React.FC<AnimationSliderProps> = ({
   animationIndex,
   setAnimationIndex,
   max,
+  disabled,
 }) => {
   return (
     <input
@@ -18,7 +20,9 @@ const AnimationSlider: React.FC<AnimationSliderProps> = ({
       max={max}
       value={animationIndex}
       onChange={(e) => setAnimationIndex(Number(e.target.value))}
+      disabled={disabled}
       className="w-full h-2 appearance-none bg-[#222] rounded outline-none
+                disabled:bg-gray-600 disabled:cursor-not-allowed
                 [&::-webkit-slider-thumb]:appearance-none
                 [&::-webkit-slider-thumb]:w-3
                 [&::-webkit-slider-thumb]:h-3

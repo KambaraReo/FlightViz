@@ -34,6 +34,7 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   const [animationIndex, setAnimationIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [speed, setSpeed] = useState(500);
+  const [showFullTrack, setShowFullTrack] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,6 +76,12 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
     return () => clearInterval(interval);
   }, [isPlaying, speed, track]);
 
+  useEffect(() => {
+    if (showFullTrack) {
+      setIsPlaying(false);
+    }
+  }, [showFullTrack]);
+
   return loading ? (
     <p>Loading...</p>
   ) : ( error ? (
@@ -89,6 +96,9 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
         speed={speed}
         setSpeed={setSpeed}
         max={track.length > 0 ? track.length - 1 : 0}
+        showFullTrack={showFullTrack}
+        setShowFullTrack={setShowFullTrack}
+        disabled={showFullTrack}
       />
 
       <MapContainer
@@ -111,38 +121,32 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
         ))}
         {track.length > 0 && (
           <>
-            {/* <Polyline
-              positions={track.map((point) => [point.lat, point.lon])}
-              pathOptions={{
-                color: '#39FF14',
-                weight: 1,
-                opacity: 0.7,
-              }}
-            /> */}
-
-            {animationIndex > 0 && (
+            {showFullTrack ? (
               <Polyline
-                positions={track.slice(0, animationIndex + 1).map(p => [p.lat, p.lon])}
-                color="yellow"
-                weight={2}
-                opacity={0.8}
+                positions={track.map((point) => [point.lat, point.lon])}
+                pathOptions={{
+                  color: 'yellow',
+                  weight: 1,
+                  opacity: 0.8,
+                }}
               />
-            )}
-
-            {/* {animationIndex < track.length && (
-              <Marker
-                position={[
-                  track[animationIndex].lat,
-                  track[animationIndex].lon,
-                ]}
-                icon={radarIcon}
-              />
-            )} */}
-            {track.length > 0 && (
-              <Marker
-                position={[track[animationIndex].lat, track[animationIndex].lon]}
-                icon={radarIcon}
-              />
+            ) : (
+              <>
+                {animationIndex > 0 && (
+                  <Polyline
+                    positions={track.slice(0, animationIndex + 1).map(p => [p.lat, p.lon])}
+                    color="yellow"
+                    weight={1}
+                    opacity={0.8}
+                  />
+                )}
+                {track.length > 0 && (
+                  <Marker
+                    position={[track[animationIndex].lat, track[animationIndex].lon]}
+                    icon={radarIcon}
+                  />
+                )}
+              </>
             )}
           </>
         )}
