@@ -2,8 +2,10 @@ import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker} from 'react-leaflet';
 import AirportMarker from './AirportMarker';
 import PlaybackControls from './PlaybackControls';
+import AltitudeControls from './AltitudeControls';
 import { fetchAirports } from '../utils/api/airports';
 import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
+import { getColorByAltitude } from '../utils/track';
 import L from "leaflet";
 
 import type { Airport } from '../utils/api/airports';
@@ -22,6 +24,8 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [speed, setSpeed] = useState(500);
   const [showFullTrack, setShowFullTrack] = useState(false);
+  const [colorByAltitude, setColorByAltitude] = useState(false);
+
   const radarIcon = useMemo(() => {
     const blinkingClass = isPlaying ? 'leaflet-blinking-icon' : '';
 
@@ -38,6 +42,29 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
       iconSize: [10, 10],
     });
   }, [isPlaying]);
+
+  const altitudeColoredSegments = useMemo(() => {
+    if (track.length < 2) return [];
+
+    const segments = [];
+    const end = showFullTrack ? track.length : animationIndex + 1;
+
+    for (let i = 1; i < end; i++) {
+      const prev = track[i - 1];
+      const curr = track[i];
+      const color = getColorByAltitude(curr.alt ?? 0);
+
+      segments.push({
+        positions: [
+          [prev.lat, prev.lon],
+          [curr.lat, curr.lon],
+        ],
+        color,
+      });
+    }
+
+    return segments;
+  }, [track, animationIndex, showFullTrack]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +131,11 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
         disabled={showFullTrack}
       />
 
+      <AltitudeControls
+        colorByAltitude={colorByAltitude}
+        setColorByAltitude={setColorByAltitude}
+      />
+
       <MapContainer
         center={[36.2048, 138.2529]}
         zoom={5.0}
@@ -125,31 +157,44 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
         {track.length > 0 && (
           <>
             {showFullTrack ? (
-              <Polyline
-                positions={track.map((point) => [point.lat, point.lon])}
-                pathOptions={{
-                  color: 'yellow',
-                  weight: 1,
-                  opacity: 0.8,
-                }}
-              />
+              colorByAltitude ? (
+                altitudeColoredSegments.map((seg, idx) => (
+                  <Polyline
+                    key={idx}
+                    positions={seg.positions.map(([lat, lon]) => [lat, lon])}
+                    pathOptions={{ color: seg.color, weight: 1, opacity: 0.8 }}
+                  />
+                ))
+              ) : (
+                <Polyline
+                  positions={track.map((point) => [point.lat, point.lon])}
+                  pathOptions={{ color: 'yellow', weight: 1, opacity: 0.8 }}
+                />
+              )
+            ) : colorByAltitude ? (
+              altitudeColoredSegments.map((seg, idx) => (
+                <Polyline
+                  key={idx}
+                  positions={seg.positions.map(([lat, lon]) => [lat, lon])}
+                  pathOptions={{ color: seg.color, weight: 1, opacity: 0.8 }}
+                />
+              ))
             ) : (
               <>
                 {animationIndex > 0 && (
                   <Polyline
-                    positions={track.slice(0, animationIndex + 1).map(p => [p.lat, p.lon])}
-                    color="yellow"
-                    weight={1}
-                    opacity={0.8}
-                  />
-                )}
-                {track.length > 0 && (
-                  <Marker
-                    position={[track[animationIndex].lat, track[animationIndex].lon]}
-                    icon={radarIcon}
+                    positions={track.slice(0, animationIndex + 1).map((point) => [point.lat, point.lon])}
+                    pathOptions={{ color: 'yellow', weight: 1, opacity: 0.8 }}
                   />
                 )}
               </>
+            )}
+
+            {!showFullTrack && track.length > 0 && (
+              <Marker
+                position={[track[animationIndex].lat, track[animationIndex].lon]}
+                icon={radarIcon}
+              />
             )}
           </>
         )}
