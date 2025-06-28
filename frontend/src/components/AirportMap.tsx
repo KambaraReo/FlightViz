@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker} from 'react-leaflet';
 import AirportMarker from './AirportMarker';
 import PlaybackControls from './PlaybackControls';
-import AltitudeControls from './AltitudeControls';
 import TimestampDisplay from './TimestampDisplay';
 import { fetchAirports } from '../utils/api/airports';
 import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
@@ -13,9 +12,10 @@ import type { Airport } from '../utils/api/airports';
 
 type AirportMapProps = {
   flightId: string;
+  colorByAltitude: boolean;
 };
 
-const AirportMap = ({ flightId }: AirportMapProps) => {
+const AirportMap = ({ flightId, colorByAltitude }: AirportMapProps) => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +25,6 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [speed, setSpeed] = useState(500);
   const [showFullTrack, setShowFullTrack] = useState(false);
-  const [colorByAltitude, setColorByAltitude] = useState(false);
   const { timestamp: currentTimestamp } = track[animationIndex] ?? {}
   const [firstPoint, lastPoint] = [track[0], track[track.length - 1]];
   const { timestamp: startTimestamp } = firstPoint || {};
@@ -123,53 +122,65 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   ) : ( error ? (
     <p>{error}</p>
   ): (
-    <>
-      <PlaybackControls
-        isPlaying={isPlaying}
-        setIsPlaying={setIsPlaying}
-        animationIndex={animationIndex}
-        setAnimationIndex={setAnimationIndex}
-        speed={speed}
-        setSpeed={setSpeed}
-        max={track.length > 0 ? track.length - 1 : 0}
-        showFullTrack={showFullTrack}
-        setShowFullTrack={setShowFullTrack}
-        disabled={showFullTrack}
-      />
-
-      {showFullTrack ? (
-        <TimestampDisplay range={range} />
-      ) : (
-        <TimestampDisplay timestamp={currentTimestamp} />
-      )}
-
-      <AltitudeControls
-        colorByAltitude={colorByAltitude}
-        setColorByAltitude={setColorByAltitude}
-      />
-
-      <MapContainer
-        center={[36.2048, 138.2529]}
-        zoom={5.0}
-        className="w-full h-full"
-      >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; OpenStreetMap & CartoDB'
+    <div className="w-full h-full flex flex-col">
+      <div className="flex flex-col gap-2 p-2 bg-black text-green-400 text-sm">
+        <PlaybackControls
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+          animationIndex={animationIndex}
+          setAnimationIndex={setAnimationIndex}
+          speed={speed}
+          setSpeed={setSpeed}
+          max={track.length > 0 ? track.length - 1 : 0}
+          showFullTrack={showFullTrack}
+          setShowFullTrack={setShowFullTrack}
+          disabled={showFullTrack}
         />
-        {airports.map((airport) => (
-          <AirportMarker
-            key={airport.icao_code}
-            code={airport.icao_code}
-            label={airport.label}
-            lat={airport.lat}
-            lon={airport.lon}
+
+        {showFullTrack ? (
+          <TimestampDisplay range={range} />
+        ) : (
+          <TimestampDisplay timestamp={currentTimestamp} />
+        )}
+      </div>
+
+      <div className="flex-grow">
+        <MapContainer
+          center={[36.2048, 138.2529]}
+          zoom={5.0}
+          className="w-full h-full"
+        >
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            attribution='&copy; OpenStreetMap & CartoDB'
           />
-        ))}
-        {track.length > 0 && (
-          <>
-            {showFullTrack ? (
-              colorByAltitude ? (
+          {airports.map((airport) => (
+            <AirportMarker
+              key={airport.icao_code}
+              code={airport.icao_code}
+              label={airport.label}
+              lat={airport.lat}
+              lon={airport.lon}
+            />
+          ))}
+          {track.length > 0 && (
+            <>
+              {showFullTrack ? (
+                colorByAltitude ? (
+                  altitudeColoredSegments.map((seg, idx) => (
+                    <Polyline
+                      key={idx}
+                      positions={seg.positions.map(([lat, lon]) => [lat, lon])}
+                      pathOptions={{ color: seg.color, weight: 1, opacity: 0.8 }}
+                    />
+                  ))
+                ) : (
+                  <Polyline
+                    positions={track.map((point) => [point.lat, point.lon])}
+                    pathOptions={{ color: 'yellow', weight: 1, opacity: 0.8 }}
+                  />
+                )
+              ) : colorByAltitude ? (
                 altitudeColoredSegments.map((seg, idx) => (
                   <Polyline
                     key={idx}
@@ -178,40 +189,27 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
                   />
                 ))
               ) : (
-                <Polyline
-                  positions={track.map((point) => [point.lat, point.lon])}
-                  pathOptions={{ color: 'yellow', weight: 1, opacity: 0.8 }}
-                />
-              )
-            ) : colorByAltitude ? (
-              altitudeColoredSegments.map((seg, idx) => (
-                <Polyline
-                  key={idx}
-                  positions={seg.positions.map(([lat, lon]) => [lat, lon])}
-                  pathOptions={{ color: seg.color, weight: 1, opacity: 0.8 }}
-                />
-              ))
-            ) : (
-              <>
-                {animationIndex > 0 && (
-                  <Polyline
-                    positions={track.slice(0, animationIndex + 1).map((point) => [point.lat, point.lon])}
-                    pathOptions={{ color: 'yellow', weight: 1, opacity: 0.8 }}
-                  />
-                )}
-              </>
-            )}
+                <>
+                  {animationIndex > 0 && (
+                    <Polyline
+                      positions={track.slice(0, animationIndex + 1).map((point) => [point.lat, point.lon])}
+                      pathOptions={{ color: 'yellow', weight: 1, opacity: 0.8 }}
+                    />
+                  )}
+                </>
+              )}
 
-            {!showFullTrack && track.length > 0 && (
-              <Marker
-                position={[track[animationIndex].lat, track[animationIndex].lon]}
-                icon={radarIcon}
-              />
-            )}
-          </>
-        )}
-      </MapContainer>
-    </>
+              {!showFullTrack && track.length > 0 && (
+                <Marker
+                  position={[track[animationIndex].lat, track[animationIndex].lon]}
+                  icon={radarIcon}
+                />
+              )}
+            </>
+          )}
+        </MapContainer>
+      </div>
+    </div>
   ));
 };
 
