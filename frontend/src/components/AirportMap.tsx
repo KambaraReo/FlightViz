@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Polyline, Marker} from 'react-leaflet';
 import AirportMarker from './AirportMarker';
 import PlaybackControls from './PlaybackControls';
 import AltitudeControls from './AltitudeControls';
+import TimestampDisplay from './TimestampDisplay';
 import { fetchAirports } from '../utils/api/airports';
 import { fetchOneDayTrack, type TrackPoint } from '../utils/api/tracks';
 import { getColorByAltitude } from '../utils/track';
@@ -25,6 +26,11 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
   const [speed, setSpeed] = useState(500);
   const [showFullTrack, setShowFullTrack] = useState(false);
   const [colorByAltitude, setColorByAltitude] = useState(false);
+  const { timestamp: currentTimestamp } = track[animationIndex] ?? {}
+  const [firstPoint, lastPoint] = [track[0], track[track.length - 1]];
+  const { timestamp: startTimestamp } = firstPoint || {};
+  const { timestamp: endTimestamp } = lastPoint || {};
+  const range = { start: startTimestamp, end: endTimestamp };
 
   const radarIcon = useMemo(() => {
     const blinkingClass = isPlaying ? 'leaflet-blinking-icon' : '';
@@ -130,6 +136,12 @@ const AirportMap = ({ flightId }: AirportMapProps) => {
         setShowFullTrack={setShowFullTrack}
         disabled={showFullTrack}
       />
+
+      {showFullTrack ? (
+        <TimestampDisplay range={range} />
+      ) : (
+        <TimestampDisplay timestamp={currentTimestamp} />
+      )}
 
       <AltitudeControls
         colorByAltitude={colorByAltitude}
