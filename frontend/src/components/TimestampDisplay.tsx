@@ -41,7 +41,18 @@ const TimestampDisplay = ({ timestamp, range }: TimestampDisplayProps) => {
       >
         Switch to {isUTC ? "JST" : "UTC"}
       </button>
-      <span>{displayText}</span>
+      {range ? (
+        <>
+          <span className="block md:hidden text-center">
+            {format(range.start)}<br />~<br />{format(range.end)}
+          </span>
+          <span className="hidden md:inline">
+            <span>{displayText}</span>
+          </span>
+        </>
+      ) : (
+        <span>{displayText}</span>
+      )}
     </div>
   );
 };
