@@ -1,4 +1,4 @@
-import AnimationSlider from "./AnimationSlider";
+import AnimationSlider from './AnimationSlider';
 
 type PlaybackControlsProps = {
   isPlaying: boolean;
