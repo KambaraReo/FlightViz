@@ -34,9 +34,9 @@ const PlaybackControls = ({
   disabled,
 }: PlaybackControlsProps) => {
   return (
-    <div className="flex flex-col gap-3 p-4 border-b bg-black text-green-400 font-mono border-t border-green-700 shadow-inner">
-      <div className="flex items-center justify-between bg-black text-green-400 font-mono border-green-700 shadow-inner">
-        <div className="flex items-center gap-4">
+    <div className="flex flex-col gap-3 p-4 border-b bg-black text-green-400 font-mono border-green-700 shadow-inner">
+      <div className="flex flex-wrap-reverse items-center gap-4 justify-between bg-black text-green-400 font-mono border-green-700 shadow-inner">
+        <div className="flex flex-wrap items-center gap-2">
           {isPlaying ? (
             <button
               onClick={() => setIsPlaying(false)}
@@ -104,12 +104,12 @@ const PlaybackControls = ({
         </div>
 
         <div>
-          <span className="mr-2">Switch to:</span>
+          <span className="mr-2">Mode:</span>
           <button
             onClick={() => setShowFullTrack(!showFullTrack)}
             className="px-3 py-1 w-32 bg-black border border-green-500 rounded hover:bg-green-500 hover:text-black hover:border-green-300 focus:outline-none transition"
           >
-            {showFullTrack ? 'Animation' : 'Full Track'}
+            {showFullTrack ? 'Full Track' : 'Animation'}
           </button>
         </div>
       </div>

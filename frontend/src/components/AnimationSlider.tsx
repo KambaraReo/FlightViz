@@ -26,10 +26,10 @@ const AnimationSlider: React.FC<AnimationSliderProps> = ({
                 [&::-webkit-slider-thumb]:appearance-none
                 [&::-webkit-slider-thumb]:w-3
                 [&::-webkit-slider-thumb]:h-3
-              [&::-webkit-slider-thumb]:bg-lime-300
+              [&::-webkit-slider-thumb]:bg-yellow-200
                 [&::-webkit-slider-thumb]:rounded-full
                 [&::-webkit-slider-thumb]:shadow-md
-              [&::-moz-range-thumb]:bg-lime-300
+              [&::-moz-range-thumb]:bg-yellow-200
                 [&::-moz-range-thumb]:border-none
                 [&::-moz-range-thumb]:width-3
                 [&::-moz-range-thumb]:height-3"

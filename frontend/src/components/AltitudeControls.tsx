@@ -13,27 +13,30 @@ const AltitudeControls = ({ colorByAltitude, setColorByAltitude }: AltitudeContr
   ];
 
   return (
-    <div className="fixed bottom-4 right-8 bg-black bg-opacity-80 p-4 m-2 rounded border border-green-500 text-green-400 font-mono text-sm z-[999] shadow-lg">
+    <div className="bg-black bg-opacity-80 p-4 w-full mx-auto text-left rounded border border-gray-700 text-green-400 font-mono text-sm z-[999] shadow-lg">
+      <span className="mr-2">Altitude:</span>
       <button
         onClick={() => setColorByAltitude(!colorByAltitude)}
-        className={`mb-3 px-3 py-1 w-48 rounded border text-sm transition hover:border-green-300 focus:outline-none ${
+        className={`px-3 py-1 w-14 rounded border text-sm transition hover:border-green-300 focus:outline-none ${
           colorByAltitude
             ? 'bg-green-600 border-green-700 text-black'
             : 'bg-black border-green-500 text-green-400 hover:bg-green-500 hover:text-black'
         }`}
       >
-        {colorByAltitude ? 'Altitude Color: ON' : 'Altitude Color: OFF'}
+        {colorByAltitude ? 'ON' : 'OFF'}
       </button>
 
       {colorByAltitude && (
-        <div>
-          <h4 className="mb-2 font-bold text-green-300">Altitude Legend</h4>
-          {levels.map(({ color, label }) => (
-            <div key={label} className="flex items-center gap-2 mb-1">
-              <div style={{ backgroundColor: color, width: 20, height: 10 }} />
-              <span>{label}</span>
-            </div>
-          ))}
+        <div className="mt-4 px-4 py-2 bg-gray-800 rounded">
+          <h4 className="mb-2 pb-1 text-center text-green-300 border-b border-gray-600">Altitude Legend</h4>
+          <div className="mx-auto">
+            {levels.map(({ color, label }) => (
+              <div key={label} className="flex items-center gap-2 mb-1">
+                <div style={{ backgroundColor: color, width: 20, height: 10 }} />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
