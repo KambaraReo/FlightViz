@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { fetchFlightIds } from "../utils/api/tracks";
+import { useEffect, useState } from 'react';
+import { fetchFlightIds } from '../utils/api/tracks';
 
 type FlightSelectorProps = {
   flightId: string;
