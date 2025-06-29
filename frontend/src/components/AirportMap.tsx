@@ -148,7 +148,7 @@ const AirportMap = ({ flightId, colorByAltitude }: AirportMapProps) => {
         <MapContainer
           center={[36.2048, 138.2529]}
           zoom={5.0}
-          className="w-full h-full"
+          className="w-full h-full min-h-[360px]"
         >
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"

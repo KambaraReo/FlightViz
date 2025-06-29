@@ -8,6 +8,8 @@ type TrackPoint = {
 };
 
 const fetchOneDayTrack = async (flightId: string): Promise<TrackPoint[]> => {
+  if (!flightId) return [];
+
   try {
     const response = await fetch(`/api/v1/flights/${flightId}/track`, {
       headers: {
@@ -27,9 +29,11 @@ const fetchOneDayTrack = async (flightId: string): Promise<TrackPoint[]> => {
   }
 };
 
-const fetchFlightIds = async (): Promise<string[]> => {
+const fetchFlightIds = async (date: string): Promise<string[]> => {
+  if (!date) return [];
+
   try {
-    const response = await fetch('/api/v1/flights', {
+    const response = await fetch(`/api/v1/flights?date=${date}`, {
       headers: {
         Accept: 'application/json'
       }
@@ -47,5 +51,25 @@ const fetchFlightIds = async (): Promise<string[]> => {
   }
 };
 
+const fetchAvailableDates = async (): Promise<string[]> => {
+  try {
+    const response = await fetch('/api/v1/flights/available_dates', {
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch available dates');
+    }
+
+    const data: string[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching available dates:', error);
+    return [];
+  }
+};
+
 export type { TrackPoint }
-export { fetchOneDayTrack, fetchFlightIds }
+export { fetchOneDayTrack, fetchFlightIds, fetchAvailableDates }
