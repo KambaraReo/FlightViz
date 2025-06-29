@@ -1,6 +1,40 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Tracks", type: :request do
+  # FactoryBotのシーケンスをテストケース毎にリセット
+  before(:each) do
+    FactoryBot.reload
+  end
+
+  describe "GET /api/v1/flights/available_dates" do
+    let(:json) { JSON.parse(response.body) }
+
+    context "when tracks exist" do
+      let!(:tracks) do
+        list = create_list(:track, 4)
+        list[1].update!(timestamp: list[0].timestamp)
+        list
+      end
+      let(:expected_dates) { ["2025-01-01", "2025-01-03", "2025-01-04"] }
+
+      it "returns 200 and a unique list of available dates for tracks" do
+        get "/api/v1/flights/available_dates", headers: { "ACCEPT" => "application/json" }
+
+        expect(response).to have_http_status(:ok)
+        expect(json).to eq(expected_dates)
+      end
+    end
+
+    context "when tracks does not exist" do
+      it "returns 404 with error message" do
+        get "/api/v1/flights/available_dates", headers: { "ACCEPT" => "application/json" }
+
+        expect(response).to have_http_status(:not_found)
+        expect(json["error"]).to eq("Not Found")
+      end
+    end
+  end
+
   describe "GET /api/v1/flights" do
     let(:json) { JSON.parse(response.body) }
 

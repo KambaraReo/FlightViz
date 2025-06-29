@@ -1,4 +1,14 @@
 class Api::V1::TracksController < ApplicationController
+  def available_dates
+    dates = Track.select("DATE(timestamp) AS date").distinct.order("date").map { |track| track.date }
+
+    if dates.any?
+      render json: dates.as_json, status: :ok
+    else
+      render json: { error: "Not Found" }, status: :not_found
+    end
+  end
+
   def flight_ids
     flight_ids = Track.distinct.order(:flight_id).pluck(:flight_id)
 
