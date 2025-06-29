@@ -8,6 +8,8 @@ type TrackPoint = {
 };
 
 const fetchOneDayTrack = async (flightId: string): Promise<TrackPoint[]> => {
+  if (!flightId) return [];
+
   try {
     const response = await fetch(`/api/v1/flights/${flightId}/track`, {
       headers: {
@@ -27,9 +29,11 @@ const fetchOneDayTrack = async (flightId: string): Promise<TrackPoint[]> => {
   }
 };
 
-const fetchFlightIds = async (): Promise<string[]> => {
+const fetchFlightIds = async (date: string): Promise<string[]> => {
+  if (!date) return [];
+
   try {
-    const response = await fetch('/api/v1/flights', {
+    const response = await fetch(`/api/v1/flights?date=${date}`, {
       headers: {
         Accept: 'application/json'
       }

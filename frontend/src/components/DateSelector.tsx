@@ -33,6 +33,8 @@ const DateSelector = ({
         >
           <option
             className="text-center"
+            key={''}
+            value={''}
           >
             Select
           </option>

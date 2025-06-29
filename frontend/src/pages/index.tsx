@@ -6,8 +6,7 @@ import AltitudeControls from '../components/AltitudeControls';
 
 const FlightMapPage = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
-  const defaultFlightId = 'AP00520';
-  const [flightId, setFlightId] = useState<string>(defaultFlightId);
+  const [flightId, setFlightId] = useState<string>('');
   const [colorByAltitude, setColorByAltitude] = useState(false);
 
   return (
@@ -25,6 +24,7 @@ const FlightMapPage = () => {
             setSelectedDate={setSelectedDate}
           />
           <FlightSelector
+            selectedDate={selectedDate}
             flightId={flightId}
             setFlightId={setFlightId}
           />
