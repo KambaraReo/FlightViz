@@ -10,7 +10,21 @@ class Api::V1::TracksController < ApplicationController
   end
 
   def flight_ids
-    flight_ids = Track.distinct.order(:flight_id).pluck(:flight_id)
+    if params[:date].present?
+      begin
+        date = Date.parse(params[:date])
+      rescue ArgumentError
+        return render json: { error: "Invalid date format" }, status: :bad_request
+      end
+
+      flight_ids = Track
+        .where(timestamp: date.beginning_of_day..date.end_of_day)
+        .distinct
+        .order(:flight_id)
+        .pluck(:flight_id)
+    else
+      flight_ids = Track.distinct.order(:flight_id).pluck(:flight_id)
+    end
 
     if flight_ids.any?
       render json: flight_ids.as_json, status: :ok
