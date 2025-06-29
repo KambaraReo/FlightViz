@@ -1,9 +1,11 @@
-import { useState } from "react";
-import AirportMap from "../components/AirportMap";
-import FlightSelector from "../components/FlightSelector";
+import { useState } from 'react';
+import AirportMap from '../components/AirportMap';
+import DateSelector from '../components/DateSelector';
+import FlightSelector from '../components/FlightSelector';
 import AltitudeControls from '../components/AltitudeControls';
 
 const FlightMapPage = () => {
+  const [selectedDate, setSelectedDate] = useState<string>('');
   const defaultFlightId = 'AP00520';
   const [flightId, setFlightId] = useState<string>(defaultFlightId);
   const [colorByAltitude, setColorByAltitude] = useState(false);
@@ -18,6 +20,10 @@ const FlightMapPage = () => {
           />
         </div>
         <div className="order-1 md:order-2 w-full md:w-[25%] h-auto flex flex-col items-center gap-4 p-4 bg-black border-t md:border-t-0 md:border-l border-green-500">
+          <DateSelector
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
           <FlightSelector
             flightId={flightId}
             setFlightId={setFlightId}
