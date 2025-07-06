@@ -49,7 +49,11 @@
   <img src="./docs/demo_image_2.png" alt="Flight Viz デモ画像" width="600" />
 </p>
 
-※ 後日、デモ用GIF画像を追加予定
+※ 後日、デモ用GIF画像を追加予定（2025/7/6追加）
+<p align="left">
+  <img src="./docs/demo_gif.gif" alt="Flight Viz デモGIF画像" width="600" />
+</p>
+
 
 ## 環境・主な使用技術
 ### 環境
@@ -120,27 +124,25 @@ docker compose exec backend bundle exec rails airports:import_file_data[jp-airpo
 
 ### 必須カラム
 #### 飛行データCSVのフォーマット
-| カラム名       | 説明                             | 型                |
-|----------------|----------------------------------|-------------------|
-| `flight_id`    | フライトの識別子                 | string            |
-| `timestamp`    | データ記録時刻（UTC）            | datetime (ISO8601)|
-| `lat`          | 緯度                             | float             |
-| `lon`          | 経度                             | float             |
-| `alt`     | 高度（フィート）                 | integer           |
-| `aircraft_type`     | 型式                 | string           |
-
-> ※ `timestamp` は ISO8601 形式 (`2019-04-22T00:00:00.000Z`) で記載されている必要があります。
+| カラム名         | 説明                             | 例                |
+|-----------------|--------------------------------|-------------------|
+| `flight_id`     | フライトの識別子                 | EX00001            |
+| `timestamp`     | データ記録時刻（UTC）             | 18:00:00.0         |
+| `lat`           | 緯度                           | 39.133333          |
+| `lon`           | 経度                           | 160.783333         |
+| `alt`           | 高度（フィート）                 | 33000              |
+| `aircraft_type` | 型式                           | B748               |
 
 #### 空港データCSVのフォーマット
-| カラム名       | 説明                             | 型                |
-|----------------|----------------------------------|-------------------|
-| `country_code`    | 国コード                 | string            |
-| `icao_code`    | ICAO空港コード            | string|
-| `label`          | 空港名                             | string             |
-| `lat`          | 緯度                             | float             |
-| `lon`     | 経度                 | integer           |　float
-| `uri`          | データソースのURI                             | string             |
-| `status`          | 地図上への表示有無（0 or 1）                             | integer             |
+| カラム名       | 説明                             | 例                              |
+|----------------|----------------------------------|-------------------------------|
+| `country_code` | 国コード                    | JP                                   |
+| `icao_code`    | ICAO空港コード              | RJAA                                 |
+| `label`        | 空港名                      | NARITA INTERNATIONAL AIRPORT        |
+| `lat`          | 緯度                       | 35.7647                              |
+| `lon`          | 経度                       | 140.3864                             |
+| `uri`          | データソースのURI            | https://flight-viz.example.com/rjaa  |
+| `status`       | 地図上への表示有無（0 or 1）  | 1                                    |
 
 
 ## ローカル環境起動手順
