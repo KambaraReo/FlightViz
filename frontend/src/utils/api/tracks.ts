@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "./config";
+
 type TrackPoint = {
   timestamp: string;
   flight_id: string;
@@ -11,11 +13,14 @@ const fetchOneDayTrack = async (flightId: string): Promise<TrackPoint[]> => {
   if (!flightId) return [];
 
   try {
-    const response = await fetch(`/api/v1/flights/${flightId}/track`, {
-      headers: {
-        Accept: 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/v1/flights/${flightId}/track`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to fetch ${flightId} track`);
@@ -33,43 +38,43 @@ const fetchFlightIds = async (date: string): Promise<string[]> => {
   if (!date) return [];
 
   try {
-    const response = await fetch(`/api/v1/flights?date=${date}`, {
+    const response = await fetch(`${API_BASE_URL}/v1/flights?date=${date}`, {
       headers: {
-        Accept: 'application/json'
-      }
+        Accept: "application/json",
+      },
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch flight IDs');
+      throw new Error("Failed to fetch flight IDs");
     }
 
     const data: string[] = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching flight Ids:', error);
+    console.error("Error fetching flight Ids:", error);
     return [];
   }
 };
 
 const fetchAvailableDates = async (): Promise<string[]> => {
   try {
-    const response = await fetch('/api/v1/flights/available_dates', {
+    const response = await fetch(`${API_BASE_URL}/v1/flights/available_dates`, {
       headers: {
-        Accept: 'application/json'
-      }
+        Accept: "application/json",
+      },
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch available dates');
+      throw new Error("Failed to fetch available dates");
     }
 
     const data: string[] = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching available dates:', error);
+    console.error("Error fetching available dates:", error);
     return [];
   }
 };
 
-export type { TrackPoint }
-export { fetchOneDayTrack, fetchFlightIds, fetchAvailableDates }
+export type { TrackPoint };
+export { fetchOneDayTrack, fetchFlightIds, fetchAvailableDates };
