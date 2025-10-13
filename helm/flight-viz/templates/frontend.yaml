@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "flight-viz.frontend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "flight-viz.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: {{ .Values.replicaCount.frontend }}
+  selector:
+    matchLabels:
+      {{- include "flight-viz.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "flight-viz.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend
+    spec:
+      {{- if .Values.registry.enabled }}
+      imagePullSecrets:
+      - name: {{ include "flight-viz.fullname" . }}-registry
+      {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "flight-viz.fullname" . }}
+      {{- end }}
+      {{- with .Values.security.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: frontend
+        image: "{{ .Values.image.frontend.repository }}:{{ .Values.image.frontend.tag }}"
+        imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
+        {{- with .Values.security.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.healthCheck.frontend.path }}
+            port: 80
+          initialDelaySeconds: {{ .Values.healthCheck.frontend.initialDelaySeconds }}
+          periodSeconds: {{ .Values.healthCheck.frontend.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.healthCheck.frontend.path }}
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- if .Values.resources.frontend }}
+        resources:
+          {{- toYaml .Values.resources.frontend | nindent 10 }}
+        {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "flight-viz.frontend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "flight-viz.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  selector:
+    {{- include "flight-viz.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+  ports:
+  - port: {{ .Values.service.frontend.port }}
+    targetPort: 80
+  type: {{ .Values.service.frontend.type }}
