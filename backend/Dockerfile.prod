@@ -5,6 +5,7 @@ RUN apt-get update -qq && \
     apt-get install -y \
     build-essential \
     libpq-dev \
+    libyaml-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -21,8 +22,7 @@ RUN bundle config set --local without 'development test' && \
 # 残りのコードをコピー
 COPY . .
 
-# アセットのプリコンパイル
-RUN RAILS_ENV=production bundle exec rails assets:precompile
+# Rails APIなのでアセットプリコンパイルは不要
 
 # 非rootユーザーを作成（UID 1000で統一）
 RUN groupadd -r app -g 1000 && useradd -r -g app -u 1000 app

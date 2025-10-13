@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # 依存をインストール
-RUN npm ci --only=production
+RUN npm ci
 
 # 残りのコードをコピー
 COPY . .
