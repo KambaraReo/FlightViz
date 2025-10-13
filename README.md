@@ -188,57 +188,40 @@ VPS の k3s クラスターに SSL 証明書付きでデプロイできます。
 
 ### クイックスタート
 
-**開発環境（SSL 無し）:**
-
 ```bash
-make dev
-make import-data
+# デプロイ
+make deploy
+
+# 状況確認
+make status
+
+# ログ確認
+make logs-backend
+make logs-frontend
+
+# ローカルアクセス
 make port-forward  # http://localhost:8080
-```
-
-**本番環境（SSL 有り）:**
-
-```bash
-make prod DOMAIN=your-domain.com EMAIL=your-email@example.com
-make import-data  # https://your-domain.com
 ```
 
 ### 主な特徴
 
 - **SSL 証明書自動取得**: cert-manager による Let's Encrypt 証明書の自動取得・更新
-- **Helm 管理**: Kubernetes リソースの統合管理
-- **環境別設定**: 開発・本番環境の設定分離
-- **高可用性**: 複数レプリカによる冗長構成
+- **シンプルな構成**: 理解しやすい Kubernetes マニフェスト
+- **コンポーネント分離**: backend/frontend/database の明確な分離
+- **セキュリティ**: 非 root 実行、最小権限の原則
 
-詳細なデプロイ手順は [DEPLOY-HELM.md](./DEPLOY-HELM.md) を参照してください。
+詳細なデプロイ手順は [DEPLOY.md](./DEPLOY.md) を参照してください。
 
 ## 環境変数設定
 
-**重要**: 初回セットアップ時に環境変数ファイルの作成が必要です：
+本番デプロイ用の環境変数は `k8s/backend/secret.yaml` で管理されています。
+必要に応じて以下の値を変更してください：
 
-```bash
-# Makefileを使用した自動セットアップ
-make setup-env
-
-# または手動でコピー
-cp .env.example .env
-cp .env.example .env.development
-cp .env.example .env.production
-cp frontend/.env.example frontend/.env
-cp frontend/.env.example frontend/.env.development
-cp frontend/.env.example frontend/.env.production
-
-# 実際の値を設定
-vim .env.development      # 開発環境用
-vim .env.production       # 本番環境用（VPS IP、パスワードなど）
-
-# 環境変数の確認
-make check-env
-```
-
-詳細は [ENV.md](./ENV.md) を参照してください。
+- PostgreSQL 接続情報
+- Rails SECRET_KEY_BASE
+- DockerHub 認証情報
 
 ## 備考
 
 - ローカル環境: Docker Compose
-- 本番環境: k3s + Helm + cert-manager
+- 本番環境: k3s + Kubernetes マニフェスト
