@@ -7,22 +7,24 @@ metadata:
     app: flight-viz
     component: ingress
   annotations:
-    # Traefik設定
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
-    traefik.ingress.kubernetes.io/router.tls: "true"
+    # 一時的にHTTPのみ（SSL証明書のレート制限のため）
+    # # Traefik設定
+    # traefik.ingress.kubernetes.io/redirect-entry-point: https
+    # traefik.ingress.kubernetes.io/router.tls: "true"
 
-    # SSL証明書設定
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # # SSL証明書設定
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
-    # セキュリティヘッダー
-    traefik.ingress.kubernetes.io/router.middlewares: flight-viz-security-headers@kubernetescrd
+    # # セキュリティヘッダー
+    # traefik.ingress.kubernetes.io/router.middlewares: flight-viz-security-headers@kubernetescrd
 spec:
   ingressClassName: traefik
 
-  tls:
-    - hosts:
-        - flightviz.reokambara.com
-      secretName: flight-viz-tls
+  # 一時的にTLS設定をコメントアウト
+  # tls:
+  #   - hosts:
+  #       - flightviz.reokambara.com
+  #     secretName: flight-viz-tls
 
   rules:
     - host: flightviz.reokambara.com
