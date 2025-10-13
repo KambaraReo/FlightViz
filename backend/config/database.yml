@@ -15,7 +15,7 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: db
+  host: <%= ENV.fetch("DATABASE_HOST", "db") %>
   username: <%= ENV.fetch("POSTGRES_USER", "user") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "password") %>
   # For details on connection pooling, see Rails configuration guide
@@ -82,6 +82,6 @@ test:
 #
 production:
   <<: *default
-  database: app_production
-  username: app
-  password: <%= ENV["APP_DATABASE_PASSWORD"] %>
+  database: <%= ENV.fetch("POSTGRES_DB", "app_production") %>
+  username: <%= ENV.fetch("POSTGRES_USER", "user") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD") %>
