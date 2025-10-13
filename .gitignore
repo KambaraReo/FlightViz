@@ -5,6 +5,7 @@ log/
 tmp/
 .env
 .env.*
+!.env.example
 vendor/
 frontend/node_modules/
 frontend/dist/
