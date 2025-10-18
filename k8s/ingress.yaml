@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flight-viz-ingress
+  namespace: flight-viz
+  labels:
+    app: flight-viz
+    component: ingress
+  annotations:
+    # Traefik設定
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/router.tls: "true"
+
+    # SSL証明書設定
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: traefik
+
+  tls:
+    - hosts:
+        - flightviz.reokambara.com
+      secretName: flight-viz-tls
+
+  rules:
+    - host: flightviz.reokambara.com
+      http:
+        paths:
+          # API routes
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 3000
+
+          # Frontend routes (catch-all)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80

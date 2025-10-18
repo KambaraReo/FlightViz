@@ -1,0 +1,36 @@
+FROM ruby:3.2-slim
+
+# 必要なライブラリのインストール
+RUN apt-get update -qq && \
+    apt-get install -y \
+    build-essential \
+    libpq-dev \
+    libyaml-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 作業ディレクトリを指定
+WORKDIR /app
+
+# Gemfile 関連を先にコピー
+COPY Gemfile* ./
+
+# bundle install (本番用)
+RUN bundle config set --local without 'development test' && \
+    bundle install
+
+# 残りのコードをコピー
+COPY . .
+
+# Rails APIなのでアセットプリコンパイルは不要
+
+# 非rootユーザーを作成（UID 1000で統一）
+RUN groupadd -r app -g 1000 && useradd -r -g app -u 1000 app
+RUN chown -R app:app /app
+USER app
+
+# ポート3000を開放
+EXPOSE 3000
+
+# 本番サーバー起動
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000", "-e", "production"]

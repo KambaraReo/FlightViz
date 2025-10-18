@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* HTML要素とbody要素の背景色を黒色に設定 */
+html {
+  background-color: #000000;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -36,6 +41,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #000000;
 }
 
 h1 {
@@ -65,7 +71,13 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: #000000; /* ライトモードでも黒背景を維持 */
+  }
+  html {
+    background-color: #000000; /* ライトモードでも黒背景を維持 */
+  }
+  body {
+    background-color: #000000; /* ライトモードでも黒背景を維持 */
   }
   a:hover {
     color: #747bff;

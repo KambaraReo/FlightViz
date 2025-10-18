@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+  namespace: flight-viz
+  labels:
+    app: database
+    component: postgres
+spec:
+  selector:
+    app: database
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  type: ClusterIP

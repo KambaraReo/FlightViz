@@ -5,10 +5,12 @@ log/
 tmp/
 .env
 .env.*
+!.env.example
 vendor/
 frontend/node_modules/
 frontend/dist/
 backend/vendor/
+k8s/backend/secret.yaml
 
 # VSCode, macOS, etc.
 .vscode/
