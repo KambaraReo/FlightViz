@@ -13,9 +13,6 @@ metadata:
 
     # SSL証明書設定
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-
-    # セキュリティヘッダー
-    traefik.ingress.kubernetes.io/router.middlewares: flight-viz-security-headers@kubernetescrd
 spec:
   ingressClassName: traefik
 
