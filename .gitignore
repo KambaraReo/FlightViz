@@ -10,9 +10,15 @@ vendor/
 frontend/node_modules/
 frontend/dist/
 backend/vendor/
-k8s/backend/secret.yaml
 
 # VSCode, macOS, etc.
 .vscode/
 .DS_Store
 .ruby-lsp
+
+# k8s documents
+k8s/backend/secret.yaml
+
+# local管理するスクリプト
+local-scripts/
+backups/

@@ -38,6 +38,13 @@ kubectl apply -f k8s/frontend/service.yaml
 echo "Ingress を適用中..."
 kubectl apply -f k8s/ingress.yaml
 
+# 6. デプロイメントを再起動
+if [ "$1" != "--skip-build" ]; then
+    echo "デプロイメントを再起動して新しいイメージを適用中..."
+    kubectl -n flight-viz rollout restart deployment/backend
+    kubectl -n flight-viz rollout restart deployment/frontend
+fi
+
 echo "デプロイメントの完了を待機中..."
 kubectl wait --for=condition=available deployment/backend -n flight-viz --timeout=600s
 kubectl wait --for=condition=available deployment/frontend -n flight-viz --timeout=300s
